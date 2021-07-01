@@ -55,9 +55,20 @@ Note: Visual Studio also has the option of opening `CMakeLists.txt`
 directly; Using this option, Visual Studio will not find the source code,
 though, therefore the `File>Open>Folder...` option is preferred.
 
+Visual Studio does not produce a .sln solution file nor the .vcxproj files
+that may be required by VS extension tools.
+
+To generate the .sln/.vcxproj files run CMake manually, as described below.
+
+Instructions to run CMake manually:
+
+    mkdir -p contrib/buildsystems/out
+    cd contrib/buildsystems/out
+    cmake ../ -DCMAKE_BUILD_TYPE=Release
+
 Following the instructions above will build the git binaries in the contrib/buildsystems/out
 directory (our top-level .gitignore file knows to ignore contents of
-this directory).
+this directory). The project .sln and .vcxproj files are also generated.
 
 By default CMake will install vcpkg locally to your source tree on configuration,
 to avoid this, add `-DNO_VCPKG=TRUE` to the command line when configuring.
@@ -74,6 +85,16 @@ empty(default) :
 
 NOTE: -DCMAKE_BUILD_TYPE is optional. For multi-config generators like Visual Studio
 this option is ignored
+
+This process generates a Makefile(Linux/*BSD/MacOS), Visual Studio solution(Windows) by default.
+Run `make` to build Git on Linux/*BSD/MacOS.
+Open git.sln on Windows and build Git.
+
+NOTE: By default CMake will install vcpkg locally to your source tree on configuration,
+to avoid this, add `-DNO_VCPKG=TRUE` to the command line when configuring.
+
+The Visual Studio default generator changed in v16.6 from its Visual Studio
+implemenation to `Ninja` This required changes to many CMake scripts.
 
 == Running the tests ==
 
