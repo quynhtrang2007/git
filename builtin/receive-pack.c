@@ -2539,7 +2539,7 @@ int cmd_receive_pack(int argc, const char **argv, const char *prefix)
 		write_head_info(&announced_oids);
 	}
 	if (advertise_refs)
-		return 0;
+		goto cleanup;
 
 	packet_reader_init(&reader, 0, NULL, 0,
 			   PACKET_READ_CHOMP_NEWLINE |
@@ -2599,6 +2599,7 @@ int cmd_receive_pack(int argc, const char **argv, const char *prefix)
 			update_server_info(0);
 		clear_shallow_info(&si);
 	}
+cleanup:
 	if (use_sideband)
 		packet_flush(1);
 	oid_array_clear(&shallow);
