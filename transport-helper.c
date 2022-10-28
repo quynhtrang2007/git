@@ -570,10 +570,11 @@ static int fetch_with_import(struct transport *transport,
 	}
 	strbuf_release(&buf);
 	if (auto_gc) {
-		const char *argv_gc_auto[] = {
-			"gc", "--auto", "--quiet", NULL,
-		};
-		run_command_v_opt(argv_gc_auto, RUN_GIT_CMD);
+		struct child_process cmd = CHILD_PROCESS_INIT;
+
+		cmd.git_cmd = 1;
+		strvec_pushl(&cmd.args, "gc", "--auto", "--quiet", NULL);
+		run_command(&cmd);
 	}
 	return 0;
 }
