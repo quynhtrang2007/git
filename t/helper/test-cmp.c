@@ -13,21 +13,14 @@
 
 static int run_diff(const char *path1, const char *path2)
 {
-	const char *argv[] = {
-		"diff", "--no-index", NULL, NULL, NULL
-	};
-	const char *env[] = {
-		"GIT_PAGER=cat",
-		"GIT_DIR=" NO_SUCH_DIR,
-		"HOME=" NO_SUCH_DIR,
-		NULL
-	};
+	struct child_process cmd = CHILD_PROCESS_INIT;
 
-	argv[2] = path1;
-	argv[3] = path2;
-	return run_command_v_opt_cd_env(argv,
-					RUN_COMMAND_NO_STDIN | RUN_GIT_CMD,
-					NULL, env);
+	cmd.git_cmd = 1;
+	cmd.no_stdin = 1;
+	strvec_pushl(&cmd.args, "diff", "--no-index", path1, path2, NULL);
+	strvec_pushl(&cmd.env, "GIT_PAGER=cat", "GIT_DIR=" NO_SUCH_DIR,
+		     "HOME=" NO_SUCH_DIR, NULL);
+	return run_command(&cmd);
 }
 
 int cmd__cmp(int argc, const char **argv)
