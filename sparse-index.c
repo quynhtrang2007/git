@@ -501,7 +501,7 @@ void clear_skip_worktree_from_present_files(struct index_state *istate)
 		return;
 
 	trace2_region_enter("index", "clear_skip_worktree_from_present_files",
-											istate->repo);
+			    istate->repo);
 restart:
 	for (i = 0; i < istate->cache_nr; i++) {
 		struct cache_entry *ce = istate->cache[i];
@@ -523,12 +523,12 @@ restart:
 
 	if (path_count[0])
 		trace2_data_intmax("index", istate->repo,
-											 "sparse_path_count", path_count[0]);
+				   "sparse_path_count", path_count[0]);
 	if (restarted)
 		trace2_data_intmax("index", istate->repo,
-											 "sparse_path_count_full", path_count[1]);
+				   "sparse_path_count_full", path_count[1]);
 	trace2_region_leave("index", "clear_skip_worktree_from_present_files",
-										  istate->repo);
+			    istate->repo);
 }
 
 /*
