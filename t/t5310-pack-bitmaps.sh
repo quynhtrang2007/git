@@ -425,7 +425,7 @@ test_bitmap_cases () {
 		)
 	'
 
-	test_expect_success 'complains about multiple pack bitmaps' '
+	test_expect_success 'complains about multiple pack bitmaps when debugging by trace2' '
 		rm -fr repo &&
 		git init repo &&
 		test_when_finished "rm -fr repo" &&
@@ -449,8 +449,13 @@ test_bitmap_cases () {
 			test_line_count = 2 packs &&
 			test_line_count = 2 bitmaps &&
 
-			git rev-list --use-bitmap-index HEAD 2>err &&
-			grep "ignoring extra bitmap file" err
+			ls -tr .git/objects/pack | grep -e "^pack-.*\.pack$" > sorted-packs &&
+			ignored_pack="$(cat sorted-packs | awk 'NR==1{print}')" &&
+			open_pack="$(cat sorted-packs | awk 'NR==2{print}')" &&
+
+			GIT_TRACE2_PERF=1 git rev-list --use-bitmap-index HEAD 2>err &&
+			grep "opened bitmap file:$opened_pack" err &&
+			grep "ignoring extra bitmap file:$ignored_pack" err
 		)
 	'
 }
